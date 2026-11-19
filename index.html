@@ -1,0 +1,2938 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>易支道 EasySpend — 项目展示</title>
+  <!-- Open-Source Motion & Touch Carousel Libraries (CDN with graceful offline fallback) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <style>
+    :root {
+      --bg: #f6f8f7;
+      --surface: #ffffff;
+      --surface-soft: #eef3f1;
+      --text: #111816;
+      --text-muted: #5b6a65;
+      --border: rgba(17, 24, 22, 0.09);
+      --primary: #0f6e56;
+      --primary-soft: rgba(15, 110, 86, 0.09);
+      --safe: #0f7b5f;
+      --safe-bg: rgba(15, 123, 95, 0.11);
+      --danger: #d14343;
+      --accent: #3d6399;
+      --hero-start: #0c4e3e;
+      --hero-end: #16745b;
+      --shadow: 0 10px 30px rgba(12, 46, 36, 0.06);
+      --phone-shadow: 0 22px 54px rgba(12, 46, 36, 0.14);
+      --radius: 20px;
+      --font-sans: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0c1210;
+      --surface: #141c19;
+      --surface-soft: #1b2522;
+      --text: #eef5f2;
+      --text-muted: #93a69f;
+      --border: rgba(238, 245, 242, 0.10);
+      --primary: #3de0a8;
+      --primary-soft: rgba(61, 224, 168, 0.11);
+      --safe: #3de0a8;
+      --safe-bg: rgba(61, 224, 168, 0.13);
+      --danger: #ff7575;
+      --accent: #72aef2;
+      --hero-start: #0d2620;
+      --hero-end: #153b31;
+      --shadow: 0 12px 32px rgba(0, 0, 0, 0.34);
+      --phone-shadow: 0 24px 56px rgba(0, 0, 0, 0.52);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: clip;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      font-variant-numeric: tabular-nums;
+      overflow-x: clip;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input {
+      font-family: inherit;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Sticky Navbar + GPU Scroll Progress Hairline */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: color-mix(in srgb, var(--bg) 86%, transparent);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .scroll-progress {
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 100%;
+      height: 2px;
+      background: var(--primary);
+      transform-origin: left center;
+      transform: scaleX(0);
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .nav-inner {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .brand-sub {
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: 3px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 13.5px;
+      color: var(--text-muted);
+    }
+
+    .nav-links a {
+      position: relative;
+      padding: 4px 0;
+      transition: color 0.18s ease;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 1.5px;
+      background: var(--primary);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      border-color: var(--primary);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.92);
+    }
+
+    .nav-download {
+      height: 38px;
+      padding: 0 14px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: opacity 0.18s ease, transform 0.15s ease;
+    }
+
+    [data-theme="dark"] .nav-download {
+      color: #062119;
+    }
+
+    .nav-download:hover {
+      opacity: 0.92;
+    }
+
+    .nav-download:active {
+      transform: scale(0.96);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 50px 0 38px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 44px;
+      align-items: center;
+    }
+
+    .hero-kicker {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      font-size: clamp(30px, 5vw, 46px);
+      line-height: 1.14;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 span {
+      color: var(--primary);
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 500px;
+      margin-bottom: 24px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .btn-primary,
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease, border-color 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] .btn-primary {
+      color: #062119;
+    }
+
+    .btn-outline {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn-primary:hover,
+    .btn-outline:hover {
+      opacity: 0.93;
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:active,
+    .btn-outline:active {
+      transform: scale(0.97);
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .metric-item strong {
+      display: block;
+      font-size: 15.5px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .metric-item span {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Interactive Phone Mockup */
+    .phone-wrap {
+      display: flex;
+      justify-content: center;
+      min-width: 0;
+      perspective: 1100px;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 360px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 14px;
+      box-shadow: var(--phone-shadow);
+      will-change: transform;
+      transform-style: preserve-3d;
+    }
+
+    .phone-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 6px 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .phone-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .app-hero-card {
+      background: linear-gradient(135deg, var(--hero-start), var(--hero-end));
+      color: #ffffff;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .app-hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.82);
+      margin-bottom: 4px;
+    }
+
+    .app-balance {
+      font-size: clamp(26px, 7vw, 31px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .app-hero-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .app-hero-row small {
+      display: block;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .app-hero-row strong {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .app-goal {
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .app-goal-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.88);
+      margin-bottom: 6px;
+    }
+
+    .app-goal-track {
+      height: 5px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.24);
+      overflow: hidden;
+    }
+
+    .app-goal-fill {
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.94);
+      transform-origin: left center;
+    }
+
+    .mini-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 13px;
+    }
+
+    .mini-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .mini-card-head h3 {
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .mini-card-head span {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .cal-weekdays,
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 3px;
+      text-align: center;
+    }
+
+    .cal-weekdays span {
+      font-size: 10px;
+      color: var(--text-muted);
+      padding-bottom: 3px;
+    }
+
+    .cal-cell {
+      border-radius: 8px;
+      padding: 5px 1px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text);
+      min-width: 0;
+      transition: background 0.16s ease, border-color 0.16s ease, transform 0.15s ease;
+    }
+
+    .cal-cell:active {
+      transform: scale(0.9);
+    }
+
+    .cal-cell.has-data {
+      background: var(--surface-soft);
+    }
+
+    .cal-cell.positive {
+      background: var(--safe-bg);
+    }
+
+    .cal-cell.active {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .cal-cell b {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .cal-cell small {
+      display: block;
+      font-size: 8.5px;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .cal-cell.positive small {
+      color: var(--safe);
+      font-weight: 600;
+    }
+
+    .cal-detail {
+      margin-top: 10px;
+      padding-top: 9px;
+      border-top: 1px solid var(--border);
+      font-size: 11.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cal-detail-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Section Shell */
+    .section {
+      padding: 46px 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(22px, 4.8vw, 30px);
+      letter-spacing: -0.025em;
+      font-weight: 700;
+    }
+
+    .section-head p {
+      color: var(--text-muted);
+      font-size: 13.5px;
+      margin-top: 4px;
+    }
+
+    /* ============================================================
+       Swiper 11 GPU-Accelerated Coverflow Wheel Showcase
+       ============================================================ */
+    .wheel-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .wheel-counter {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-right: 4px;
+      min-width: 44px;
+      text-align: right;
+    }
+
+    .wheel-stage {
+      width: 100%;
+      overflow: hidden;
+      padding: 6px 0 10px;
+    }
+
+    .wheel-swiper {
+      width: 100%;
+      overflow: visible;
+      padding: 12px 0 38px !important;
+      touch-action: pan-y;
+    }
+
+    .wheel-swiper .swiper-slide {
+      width: 332px;
+      max-width: calc(100vw - 52px);
+      height: auto;
+      display: flex;
+    }
+
+    .wheel-card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .wheel-swiper .swiper-slide-active .wheel-card {
+      border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+      box-shadow: 0 16px 38px rgba(15, 110, 86, 0.12);
+    }
+
+    [data-theme="dark"] .wheel-swiper .swiper-slide-active .wheel-card {
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Hide Swiper's heavy dark coverflow shadows for clean Swiss aesthetic */
+    .wheel-swiper .swiper-slide-shadow-left,
+    .wheel-swiper .swiper-slide-shadow-right {
+      display: none !important;
+    }
+
+    .wheel-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .wheel-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.06em;
+    }
+
+    .wheel-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wheel-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: 8px;
+    }
+
+    .wheel-card p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+
+    .wheel-visual {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 12px;
+      color: var(--text-muted);
+      gap: 8px;
+    }
+
+    .wheel-visual strong {
+      font-size: 13.5px;
+      color: var(--text);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .wheel-swiper .swiper-pagination {
+      bottom: 4px !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .wheel-swiper .swiper-pagination-bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--text-muted);
+      opacity: 0.28;
+      margin: 0 !important;
+      transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease, background 0.25s ease;
+    }
+
+    .wheel-swiper .swiper-pagination-bullet-active {
+      width: 24px;
+      background: var(--primary);
+      opacity: 1;
+    }
+
+    /* ============================================================
+       Interactive Trend Chart & Digest Section
+       ============================================================ */
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .two-col-grid.even {
+      grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-head h3 {
+      font-size: 16px;
+      font-weight: 600;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .segmented {
+      display: inline-flex;
+      background: var(--surface-soft);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .segmented.full {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      width: 100%;
+    }
+
+    .seg-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.14s ease;
+    }
+
+    .seg-btn:active {
+      transform: scale(0.95);
+    }
+
+    .seg-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      background: var(--surface-soft);
+      border-radius: 12px;
+      padding: 11px 10px;
+    }
+
+    .kpi-box {
+      min-width: 0;
+      padding: 0 6px;
+    }
+
+    .kpi-box + .kpi-box {
+      border-left: 1px solid var(--border);
+      padding-left: 10px;
+    }
+
+    .kpi-box span {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .kpi-box strong {
+      display: block;
+      font-size: clamp(12.5px, 3.4vw, 15px);
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .legend-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .legend-items {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .series-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 2px 0;
+      opacity: 1;
+      transition: opacity 0.18s ease;
+    }
+
+    .series-toggle.off {
+      opacity: 0.32;
+    }
+
+    .series-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .chart-wrap {
+      position: relative;
+      touch-action: pan-y;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 200px;
+      display: block;
+      overflow: visible;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .chart-readout {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .grade-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--safe);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .digest-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 14px;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .digest-cell {
+      min-width: 0;
+    }
+
+    .digest-cell span {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .digest-cell strong {
+      display: block;
+      font-size: 14.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .rank-row-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 4px;
+      gap: 8px;
+    }
+
+    .rank-bar-bg {
+      height: 4px;
+      border-radius: 2px;
+      background: var(--surface-soft);
+      overflow: hidden;
+    }
+
+    .rank-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--primary);
+      transform-origin: left center;
+      transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .digest-points {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       AI Financial Assistant & Custom API Import Section
+       ============================================================ */
+    .api-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .api-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .api-field label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .api-input-box {
+      width: 100%;
+      min-height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text);
+      padding: 9px 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      outline: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .api-input-box:focus {
+      border-color: var(--primary);
+      background: var(--surface);
+    }
+
+    .api-test-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-compact {
+      height: 38px;
+      padding: 0 15px;
+      border-radius: 10px;
+      border: 1px solid var(--primary);
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.14s ease, opacity 0.18s ease;
+    }
+
+    [data-theme="dark"] .btn-compact {
+      color: #062119;
+    }
+
+    .btn-compact:active {
+      transform: scale(0.95);
+    }
+
+    .api-status {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .api-status.ok {
+      color: var(--safe);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--safe);
+      flex-shrink: 0;
+    }
+
+    .status-dot.pulsing {
+      animation: dotPulse 0.9s infinite ease-in-out;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.45); opacity: 0.45; }
+    }
+
+    .api-privacy-note {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .api-privacy-note strong {
+      display: block;
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .api-privacy-note span {
+      color: var(--text-muted);
+      font-size: 11.5px;
+      line-height: 1.45;
+    }
+
+    /* Editorial Minimal AI Chat Panel (Zero Bubble Overload) */
+    .ai-prompt-list {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ai-prompt-btn {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 11px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--text);
+      font-size: 13.5px;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      transition: color 0.16s ease, padding-left 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .ai-prompt-btn + .ai-prompt-btn {
+      border-top: 1px solid var(--border);
+    }
+
+    .ai-prompt-btn:hover,
+    .ai-prompt-btn.active {
+      color: var(--primary);
+      padding-left: 6px;
+    }
+
+    .ai-prompt-btn span.arrow {
+      color: var(--text-muted);
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .ai-prompt-btn.active span.arrow {
+      color: var(--primary);
+    }
+
+    .ai-response-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-left: 14px;
+      border-left: 2px solid var(--primary);
+      min-height: 152px;
+    }
+
+    .ai-response-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .ai-response-meta strong {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .ai-response-body {
+      font-size: 13.5px;
+      line-height: 1.72;
+      color: var(--text);
+      white-space: pre-line;
+    }
+
+    .ai-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 14px;
+      background: var(--primary);
+      vertical-align: -2px;
+      margin-left: 2px;
+      animation: blink 0.8s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .ai-custom-bar {
+      display: flex;
+      gap: 8px;
+      padding-top: 4px;
+    }
+
+    .ai-custom-input {
+      flex: 1;
+      min-width: 0;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text);
+      padding: 0 12px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .ai-custom-input:focus {
+      border-color: var(--primary);
+      background: var(--surface);
+    }
+
+    /* Interactive Smart Classification Table */
+    .swiss-list {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .swiss-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.35fr) minmax(0, 0.75fr);
+      gap: 14px;
+      align-items: center;
+      padding: 18px 22px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .swiss-row:hover {
+      background: var(--surface-soft);
+    }
+
+    .swiss-row.active {
+      background: color-mix(in srgb, var(--primary-soft) 72%, var(--surface));
+    }
+
+    .swiss-row + .swiss-row {
+      border-top: 1px solid var(--border);
+    }
+
+    .swiss-row h4 {
+      font-size: 14.5px;
+      font-weight: 600;
+    }
+
+    .swiss-row p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .swiss-result {
+      text-align: right;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--safe);
+    }
+
+    .pipeline-bar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-top: 1px solid var(--border);
+      background: var(--surface-soft);
+      font-size: 12px;
+    }
+
+    .pipeline-step {
+      padding: 12px 16px;
+      min-width: 0;
+    }
+
+    .pipeline-step + .pipeline-step {
+      border-left: 1px solid var(--border);
+    }
+
+    .pipeline-step small {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 2px;
+    }
+
+    .pipeline-step span {
+      display: block;
+      color: var(--text);
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Clean 4-Column Architecture Grid */
+    .arch-list {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .arch-col {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .arch-col + .arch-col {
+      border-left: 1px solid var(--border);
+    }
+
+    .arch-step {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .arch-col h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .arch-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    /* Download CTA Banner */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--hero-start), var(--hero-end));
+      color: #ffffff;
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .cta-banner h3 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .cta-banner p {
+      font-size: 13.5px;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-white,
+    .btn-ghost-white {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 42px;
+      padding: 0 18px;
+      border-radius: 11px;
+      font-size: 13.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: transform 0.16s ease, opacity 0.18s ease;
+    }
+
+    .btn-white {
+      background: #ffffff;
+      color: #0c4e3e;
+    }
+
+    .btn-ghost-white {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      color: #ffffff;
+    }
+
+    .btn-white:hover,
+    .btn-ghost-white:hover {
+      transform: translateY(-1px);
+      opacity: 0.94;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0 40px;
+      margin-top: 12px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    /* View Transition circular reveal */
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 900px) {
+      .hero-grid,
+      .two-col-grid,
+      .two-col-grid.even {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .arch-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .arch-col:nth-child(3) {
+        border-left: none;
+      }
+      .arch-col:nth-child(n+3) {
+        border-top: 1px solid var(--border);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 0 16px;
+      }
+      .nav-links,
+      .brand-sub {
+        display: none;
+      }
+      .hero {
+        padding: 28px 0 22px;
+      }
+      .hero-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .hero-actions .btn-primary {
+        grid-column: 1 / -1;
+      }
+      .hero-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 12px;
+      }
+      .section {
+        padding: 34px 0;
+      }
+      .wheel-swiper .swiper-slide {
+        width: 286px;
+        max-width: calc(100vw - 48px);
+      }
+      .wheel-card {
+        padding: 18px;
+      }
+      .panel {
+        padding: 16px;
+      }
+      .seg-btn {
+        padding: 6px 8px;
+        font-size: 12px;
+      }
+      .api-privacy-note {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .swiss-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        padding: 16px;
+      }
+      .swiss-result {
+        text-align: left;
+      }
+      .pipeline-bar {
+        grid-template-columns: 1fr;
+      }
+      .pipeline-step + .pipeline-step {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .arch-list {
+        grid-template-columns: 1fr;
+      }
+      .arch-col + .arch-col {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .cta-banner {
+        padding: 22px 18px;
+      }
+      .cta-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .btn-white,
+      .btn-ghost-white {
+        padding: 0 12px;
+        font-size: 13px;
+        min-width: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="brand">
+        <svg width="30" height="30" viewBox="0 0 64 64" fill="none" aria-label="易支道图标">
+          <rect width="64" height="64" rx="16" fill="#0F6249"/>
+          <path d="M32 29C32 21 37 15 44 15C44 22 39 27 32 27" fill="#FFFFFF"/>
+          <path d="M31.5 29C31.5 23 27 18.5 21.5 18.5C21.5 24 25.5 27.5 31.5 27.5" fill="#FFFFFF"/>
+          <path d="M32 25V31" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M16 29C16 26.8 17.8 25 20 25H42C43.7 25 45 26.3 45 28H20.5C19.7 28 19 28.7 19 29.5C19 30.3 19.7 31 20.5 31H44C46.2 31 48 32.8 48 35V36.5H42.5C39.5 36.5 37 39 37 42C37 45 39.5 47.5 42.5 47.5H48V48C48 50.2 46.2 52 44 52H20C17.8 52 16 50.2 16 48V29Z" fill="#FFFFFF"/>
+          <rect x="21" y="36" width="13" height="2.4" rx="1.2" fill="#0F6249"/>
+          <rect x="21" y="41" width="13" height="2.4" rx="1.2" fill="#0F6249"/>
+          <rect x="21" y="46" width="13" height="2.4" rx="1.2" fill="#0F6249"/>
+          <rect x="39.5" y="38.5" width="10.5" height="7" rx="3" fill="#FFFFFF"/>
+          <circle cx="43.5" cy="42" r="1.8" fill="#0F6249"/>
+        </svg>
+        <span>易支道<span class="brand-sub">EasySpend</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#wheel">核心能力</a>
+        <a href="#analytics">折线与小报</a>
+        <a href="#ai-assistant">AI 助手与 API</a>
+        <a href="#engine">智能分类</a>
+        <a href="#architecture">架构与隐私</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="icon-btn" href="https://github.com/Patrick-Arnold0712/EasySpend" target="_blank" rel="noopener noreferrer" aria-label="GitHub 仓库" title="GitHub 仓库">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.13 0 1.54-.01 2.78-.01 3.16 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+          </svg>
+        </a>
+        <a class="nav-download" href="https://github.com/Patrick-Arnold0712/EasySpend/releases/latest/download/EasySpend-latest.apk" target="_blank" rel="noopener noreferrer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          下载 APK
+        </a>
+        <button class="icon-btn" id="themeToggle" aria-label="切换深浅色模式" title="切换深浅色模式">
+          <svg id="themeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="scroll-progress" id="scrollProgress"></div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <div class="hero-kicker hero-stagger">Android · Jetpack Compose · 本地隐私优先</div>
+        <h1 class="hero-stagger">每一笔收支，<br />都<span>清晰有道</span></h1>
+        <p class="hero-desc hero-stagger">
+          记账总坚持不下来？食堂连刷漏记、同一商户老是分错类、月底不知钱花哪儿、又怕财务隐私被云端收集？易支道用自动抓账、4 级分类记忆、周月年复盘与自备 API 的 AI 顾问，把日常理财变得轻松清晰。
+        </p>
+        <div class="hero-actions hero-stagger">
+          <a class="btn-primary" href="https://github.com/Patrick-Arnold0712/EasySpend/releases/latest/download/EasySpend-latest.apk" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            下载 Android APK
+          </a>
+          <a class="btn-outline" href="https://github.com/Patrick-Arnold0712/EasySpend" target="_blank" rel="noopener noreferrer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.13 0 1.54-.01 2.78-.01 3.16 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+            </svg>
+            GitHub
+          </a>
+          <a href="#ai-assistant" class="btn-outline">体验 AI 助手</a>
+        </div>
+        <div class="hero-metrics hero-stagger">
+          <div class="metric-item">
+            <strong>防漏抓账</strong>
+            <span>连刷扣款不用手记</span>
+          </div>
+          <div class="metric-item">
+            <strong>越用越准</strong>
+            <span>记忆学习告别改类</span>
+          </div>
+          <div class="metric-item">
+            <strong>清晰复盘</strong>
+            <span>周月年折线与小报</span>
+          </div>
+          <div class="metric-item">
+            <strong>隐私自由</strong>
+            <span>本地离线 · 自备 AI</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Mobile App Preview -->
+      <div class="phone-wrap">
+        <div class="phone" id="heroPhone">
+          <div class="phone-bar">
+            <span class="phone-title">易支道</span>
+            <span>2026-11</span>
+          </div>
+
+          <div class="app-hero-card">
+            <div class="app-hero-top">
+              <span>2026-11 本月结余</span>
+              <span>存钱稳步推进</span>
+            </div>
+            <div class="app-balance" id="heroBalance">¥1,858.30</div>
+            <div class="app-hero-row">
+              <div>
+                <small>净收入</small>
+                <strong id="heroIncome">¥2,300.00</strong>
+              </div>
+              <div>
+                <small>净支出</small>
+                <strong id="heroExpense">¥441.70</strong>
+              </div>
+            </div>
+            <div class="app-goal">
+              <div class="app-goal-top">
+                <span>存钱进度</span>
+                <span>100% · ¥1,000.00</span>
+              </div>
+              <div class="app-goal-track"><div class="app-goal-fill" id="heroGoalFill"></div></div>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <div class="mini-card-head">
+              <h3>收支日历</h3>
+              <span>点按日期查看</span>
+            </div>
+            <div class="cal-weekdays">
+              <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+            </div>
+            <div class="cal-grid" id="miniCalGrid"></div>
+            <div class="cal-detail" id="miniCalDetail">
+              <div class="cal-detail-text"><strong>11月5日</strong> · 助研津贴 / 晚餐烧烤</div>
+              <strong style="color: var(--safe); flex-shrink: 0;">+¥150.00</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Features Wheel Showcase (Powered by Swiper 11 Coverflow GPU Physics) -->
+  <section class="section reveal-section" id="wheel">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>专治记账的 7 个现实难题</h2>
+          <p>左右滑动滚轮，看易支道如何解决记账漏记、懒得分类、不会复盘与隐私焦虑。</p>
+        </div>
+        <div class="wheel-controls">
+          <span class="wheel-counter" id="wheelCounter">01 / 07</span>
+          <button class="icon-btn" id="wheelPrev" aria-label="上一张">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="icon-btn" id="wheelNext" aria-label="下一张">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wheel-stage">
+      <div class="swiper wheel-swiper" id="wheelSwiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <article class="wheel-card">
+              <div>
+                <div class="wheel-card-top">
+                  <span class="wheel-num">01 / 07</span>
+                  <div class="wheel-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3>告别手记与食堂连刷漏账</h3>
+                <p>手动记账最容易三天打鱼、两天晒网。易支道实时捕获微信与支付宝扣款，针对饭堂多窗口连续自动扣款专项防漏查重，花完即入待核对队列。</p>
+              </div>
+              <div class="wheel-visual">
+                <span>解决痛点</span>
+                <strong>忘记记账 · 连刷漏记</strong>
+              </div>
+            </article>
+          </div>
+
+          <div class="swiper-slide">
+            <article class="wheel-card">
+              <div>
+                <div class="wheel-card-top">
+                  <span class="wheel-num">02 / 07</span>
+                  <div class="wheel-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
+                      <path d="M6 21v-2a6 6 0 0 1 12 0v2"/>
+                      <circle cx="19" cy="6" r="2"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3>AI 财务助手与自由 API 导入</h3>
+                <p>账记了一大堆却不知道怎么省？直接导入自备的 DeepSeek、通义千问、OpenAI 兼容或 Gemini API，随时用大白话咨询省钱与下月预算方案。</p>
+              </div>
+              <div class="wheel-visual">
+                <span>解决痛点</span>
+                <strong>只会记账 · 不会规划</strong>
+              </div>
+            </article>
+          </div>
+
+          <div class="swiper-slide">
+            <article class="wheel-card">
+              <div>
+                <div class="wheel-card-top">
+                  <span class="wheel-num">03 / 07</span>
+                  <div class="wheel-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3>补录旧账一键导入自动归类</h3>
+                <p>补录几个月的微信账单动辄几百条，手工分类太折磨。兼容微信 XLSX 与标准 CSV 一键导入，自动去重并按智能记忆秒级归类；随时零权限导出备份。</p>
+              </div>
+              <div class="wheel-visual">
+                <span>解决痛点</span>
+                <strong>历史补账难 · 换机怕丢</strong>
+              </div>
+            </article>
+          </div>
+
+          <div class="swiper-slide">
+            <article class="wheel-card">
+              <div>
+                <div class="wheel-card-top">
+                  <span class="wheel-num">04 / 07</span>
+                  <div class="wheel-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="1 4 1 10 7 10"/>
+                      <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3>已入账 20 步防手误撤销</h3>
+                <p>整理账单时最怕手滑删错记录或改错分类却找不回来。删除、改类、手动记账与确认入账全链路支持多步一键回退，整理账本零焦虑。</p>
+              </div>
+              <div class="wheel-visual">
+                <span>解决痛点</span>
+                <strong>误删误改难以找回</strong>
+              </div>
+            </article>
+          </div>
+
+          <div class="swiper-slide">
+            <article class="wheel-card">
+              <div>
+                <div class="wheel-card-top">
+                  <span class="wheel-num">05 / 07</span>
+                  <div class="wheel-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3>按日追踪净攒的收支日历</h3>
+                <p>只看月总支出很难察觉哪天消费失控。首页日历直接标出每日收支与净攒状态，支持自由翻月回看历史账本，点按单日即刻还原消费明细。</p>
+              </div>
+              <div class="wheel-visual">
+                <span>解决痛点</span>
+                <strong>花钱节奏模糊 · 回查累</strong>
+              </div>
+            </article>
+          </div>
+
+          <div class="swiper-slide">
+            <article class="wheel-card">
+              <div>
+                <div class="wheel-card-top">
+                  <span class="wheel-num">06 / 07</span>
+                  <div class="wheel-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 20V10"/>
+                      <path d="M18 20V4"/>
+                      <path d="M6 20v-4"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3>区分刚需与弹性的科学预算</h3>
+                <p>把吃饭学习等必要开支与奶茶购物等弹性消费分开管，支持按个人习惯新建自定义分类。先保生活底线再控弹性消费，存钱不委屈自己。</p>
+              </div>
+              <div class="wheel-visual">
+                <span>解决痛点</span>
+                <strong>一刀切省钱难坚持</strong>
+              </div>
+            </article>
+          </div>
+
+          <div class="swiper-slide">
+            <article class="wheel-card">
+              <div>
+                <div class="wheel-card-top">
+                  <span class="wheel-num">07 / 07</span>
+                  <div class="wheel-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3>无广告、不上传的本地多账号</h3>
+                <p>厌倦了记账软件开屏广告、卖课推销与云端隐私担忧？多账号账本全部物理隔离在本地数据库，搭配极简瑞士排版与丝滑动效，纯粹安心。</p>
+              </div>
+              <div class="wheel-visual">
+                <span>解决痛点</span>
+                <strong>广告骚扰 · 隐私泄露</strong>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Trend Chart & Digest -->
+  <section class="section reveal-section" id="analytics">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>看清钱去哪儿：周 · 月 · 年折线与小报</h2>
+          <p>解决「只记账不复盘、月底一头雾水」的问题：一眼掌握消费拐点、储蓄率与大头开销，左右划动折线细查每期数据。</p>
+        </div>
+      </div>
+
+      <div class="two-col-grid">
+        <!-- Line Chart Panel -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>收支趋势</h3>
+            <div class="segmented" role="tablist" aria-label="切换周期">
+              <button class="seg-btn" data-period="week">周</button>
+              <button class="seg-btn active" data-period="month">月</button>
+              <button class="seg-btn" data-period="year">年</button>
+            </div>
+          </div>
+
+          <div class="kpi-strip">
+            <div class="kpi-box">
+              <span>收入</span>
+              <strong id="kpiIncome" style="color: var(--safe);">¥2,300.00</strong>
+            </div>
+            <div class="kpi-box">
+              <span>支出</span>
+              <strong id="kpiExpense">¥441.70</strong>
+            </div>
+            <div class="kpi-box">
+              <span>净攒</span>
+              <strong id="kpiNet" style="color: var(--safe);">+¥1,858.30</strong>
+            </div>
+          </div>
+
+          <div class="legend-row">
+            <div class="legend-items">
+              <button class="series-toggle" data-series="income">
+                <span class="series-dot" style="background: var(--safe);"></span>收入
+              </button>
+              <button class="series-toggle" data-series="expense">
+                <span class="series-dot" style="background: var(--danger);"></span>支出
+              </button>
+              <button class="series-toggle" data-series="net">
+                <span class="series-dot" style="background: var(--accent);"></span>净攒
+              </button>
+            </div>
+            <span id="deltaLabel" style="font-weight: 600; color: var(--safe);">环比 -14%</span>
+          </div>
+
+          <div class="chart-wrap" id="chartWrap">
+            <svg class="chart-svg" id="trendSvg" viewBox="0 0 560 200"></svg>
+          </div>
+
+          <div class="chart-readout" id="chartReadout">
+            <span>划动或点按折线节点查看数据</span>
+            <strong style="color: var(--text);">2026年11月</strong>
+          </div>
+        </div>
+
+        <!-- Synced Financial Digest -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3 id="digestTitle">2026年11月 · 月报</h3>
+            <span class="grade-text" id="digestGrade">S · 攒钱标兵</span>
+          </div>
+
+          <div class="digest-2x2">
+            <div class="digest-cell">
+              <span>储蓄率</span>
+              <strong id="digestRate" style="color: var(--safe);">81%</strong>
+            </div>
+            <div class="digest-cell">
+              <span>日均支出</span>
+              <strong id="digestDaily">¥14.72</strong>
+            </div>
+            <div class="digest-cell">
+              <span>最大单笔</span>
+              <strong id="digestMax" style="color: var(--danger);">¥120.00</strong>
+            </div>
+            <div class="digest-cell">
+              <span>最常消费</span>
+              <strong id="digestFreq">松涛园食堂 · 8次</strong>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size: 13px; font-weight: 600; margin-bottom: 10px;">支出排行</div>
+            <div class="rank-list" id="digestRanks"></div>
+          </div>
+
+          <div class="digest-points" id="digestPoints"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW SECTION: AI Financial Assistant & Custom API Import -->
+  <section class="section reveal-section" id="ai-assistant">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>AI 财务智能助手与自由 API 导入</h2>
+          <p>想让 AI 帮你做理财复盘，又不想买高价会员或把账单交给第三方中转？自备 API Key 直连主流大模型，随时针对你的真实收支给建议。</p>
+        </div>
+      </div>
+
+      <div class="two-col-grid even">
+        <!-- Left: Interactive API Import & Provider Config -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>自由导入大模型 API</h3>
+            <span style="font-size: 12px; color: var(--primary); font-weight: 600;">直连 · 无订阅捆绑</span>
+          </div>
+
+          <div class="segmented full" role="tablist" aria-label="切换模型服务商">
+            <button class="seg-btn active" data-provider="deepseek">DeepSeek</button>
+            <button class="seg-btn" data-provider="qwen">通义千问</button>
+            <button class="seg-btn" data-provider="openai">OpenAI 兼容</button>
+            <button class="seg-btn" data-provider="gemini">Gemini</button>
+          </div>
+
+          <div class="api-form">
+            <div class="api-field">
+              <label>
+                <span>接口地址 Base URL</span>
+                <span id="apiProtocolLabel" style="color: var(--primary);">OpenAI 协议</span>
+              </label>
+              <input class="api-input-box" id="apiBaseUrl" type="text" readonly value="https://api.deepseek.com/v1" />
+            </div>
+
+            <div class="api-field">
+              <label>
+                <span>默认模型名称 Model</span>
+                <span>支持自由修改</span>
+              </label>
+              <input class="api-input-box" id="apiModel" type="text" readonly value="deepseek-chat" />
+            </div>
+
+            <div class="api-field">
+              <label>
+                <span>API Key（仅保存在当前账号本地）</span>
+                <span>按账号隔离</span>
+              </label>
+              <input class="api-input-box" id="apiKeyMask" type="text" readonly value="sk-••••••••••••••••••••••••a8f2" />
+            </div>
+
+            <div class="api-test-row">
+              <button class="btn-compact" id="apiTestBtn" type="button">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                测试连通性
+              </button>
+              <div class="api-status ok" id="apiStatus">
+                <span class="status-dot" id="apiStatusDot"></span>
+                <span id="apiStatusText">DeepSeek 已就绪 · 184 ms</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="api-privacy-note">
+            <div>
+              <strong>告别会员捆绑</strong>
+              <span>使用自己的 API 额度，按量极低成本提问，随时切换模型</span>
+            </div>
+            <div>
+              <strong>兼容中转与本地</strong>
+              <span>支持 SiliconFlow、OneAPI、Ollama 等 OpenAI 兼容端点</span>
+            </div>
+            <div>
+              <strong>脱敏账本上下文</strong>
+              <span>仅按需附带当月汇总与预算数据，隐私可控、建议不空泛</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Interactive Streaming AI Assistant Demo -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>AI 财务助手实时对话</h3>
+            <span id="aiModelBadge" style="font-size: 12px; color: var(--text-muted); font-family: var(--font-mono);">deepseek-chat</span>
+          </div>
+
+          <div class="ai-prompt-list" id="aiPromptList">
+            <button class="ai-prompt-btn active" data-prompt="save">
+              <span>这个月按目前节奏，还能再多存多少钱？</span>
+              <span class="arrow">→</span>
+            </button>
+            <button class="ai-prompt-btn" data-prompt="dining">
+              <span>我本月餐饮开支偏高吗？怎么优化更舒服？</span>
+              <span class="arrow">→</span>
+            </button>
+            <button class="ai-prompt-btn" data-prompt="budget">
+              <span>结合本月数据，帮我规划下月必要与弹性预算</span>
+              <span class="arrow">→</span>
+            </button>
+          </div>
+
+          <div class="ai-response-box">
+            <div class="ai-response-meta">
+              <strong>易支道 AI 财务顾问</strong>
+              <span id="aiContextNote">基于 2026-11 账本汇总</span>
+            </div>
+            <div class="ai-response-body" id="aiResponseBody"></div>
+          </div>
+
+          <form class="ai-custom-bar" id="aiCustomForm">
+            <input class="ai-custom-input" id="aiCustomInput" type="text" placeholder="试试输入问题，例如：双十一想买耳机怎么控预算？" />
+            <button class="btn-compact" type="submit">提问</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Intelligent Classification Table (Interactive Pipeline) -->
+  <section class="section reveal-section" id="engine">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>为什么它比传统记账分类更准</h2>
+          <p>同一平台既能骑单车又能点外卖，死板关键词老是分错。点击下方真实消费样本，查看金额、时段与历史手动记忆如何协同判别。</p>
+        </div>
+      </div>
+
+      <div class="swiss-list">
+        <div class="swiss-row active" data-case="0">
+          <h4>美团 · ¥1.80 · 08:15</h4>
+          <p>商户 + 小额区间 + 早高峰通勤时段记忆命中</p>
+          <div class="swiss-result">→ 交通出行</div>
+        </div>
+        <div class="swiss-row" data-case="1">
+          <h4>美团 · ¥22.50 · 12:20</h4>
+          <p>同一商户中额午餐时段，自动区分为外卖正餐</p>
+          <div class="swiss-result">→ 餐饮饮食</div>
+        </div>
+        <div class="swiss-row" data-case="2">
+          <h4>蓝山自习室（南校店）</h4>
+          <p>归一化核心商户名，自动继承「东校店」过往手动分类</p>
+          <div class="swiss-result">→ 学习提升</div>
+        </div>
+
+        <div class="pipeline-bar" id="pipelineBar">
+          <div class="pipeline-step">
+            <small>STEP 01 · 特征提取</small>
+            <span id="pipeStep1">商户：美团 · ¥1.80 · 08:15</span>
+          </div>
+          <div class="pipeline-step">
+            <small>STEP 02 · 4 级记忆匹配</small>
+            <span id="pipeStep2">命中 1 级：商户 + 小额 + 早通勤</span>
+          </div>
+          <div class="pipeline-step">
+            <small>STEP 03 · 置信度归类</small>
+            <span id="pipeStep3" style="color: var(--safe); font-weight: 700;">交通出行（98% 记忆确信）</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clean 4-Column Architecture Grid -->
+  <section class="section reveal-section" id="architecture">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>清晰分层与本地隐私架构</h2>
+          <p>从工程底层保障账本安全、断网可用与流畅体验——数据只属于你，不被广告与云端绑定。</p>
+        </div>
+      </div>
+
+      <div class="arch-list">
+        <div class="arch-col">
+          <span class="arch-step">01 · 界面与动效</span>
+          <h4>Jetpack Compose</h4>
+          <ul>
+            <li>· Helvetica 极简瑞士排版</li>
+            <li>· Canvas 交互折线与环形图</li>
+            <li>· GPU 圆形扩散深浅切主题</li>
+          </ul>
+        </div>
+        <div class="arch-col">
+          <span class="arch-step">02 · 状态编排</span>
+          <h4>MVVM + StateFlow</h4>
+          <ul>
+            <li>· 单向数据流与 20 步撤销栈</li>
+            <li>· 翻页式新手快速上手</li>
+            <li>· 支付通知防漏与智能去重</li>
+          </ul>
+        </div>
+        <div class="arch-col">
+          <span class="arch-step">03 · 智能引擎</span>
+          <h4>本地 + BYOK AI</h4>
+          <ul>
+            <li>· 4 级历史记忆分类学习</li>
+            <li>· 周 / 月 / 年趋势与小报</li>
+            <li>· 多服务商自定义 API 顾问</li>
+          </ul>
+        </div>
+        <div class="arch-col">
+          <span class="arch-step">04 · 存储安全</span>
+          <h4>本地隔离存储</h4>
+          <ul>
+            <li>· Room 分账号独立数据库</li>
+            <li>· SAF 零存储权限导入导出</li>
+            <li>· DataStore 独立密钥隔离</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download & GitHub CTA -->
+  <section class="section reveal-section" id="download" style="padding-top: 8px;">
+    <div class="container">
+      <div class="cta-banner">
+        <div>
+          <h3>把记账变成一件轻松无负担的小事</h3>
+          <p>开源免费 · Android 8.0+ · 本地隐私隔离 · 支持自由接入大模型 API</p>
+        </div>
+        <div class="cta-actions">
+          <a class="btn-white" href="https://github.com/Patrick-Arnold0712/EasySpend/releases/latest/download/EasySpend-latest.apk" target="_blank" rel="noopener noreferrer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            下载最新 APK
+          </a>
+          <a class="btn-ghost-white" href="https://github.com/Patrick-Arnold0712/EasySpend" target="_blank" rel="noopener noreferrer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.13 0 1.54-.01 2.78-.01 3.16 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+            </svg>
+            GitHub 仓库
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-inner">
+      <div><strong style="color: var(--text);">易支道 EasySpend</strong> · 每一笔收支，都清晰有道</div>
+      <div class="footer-links">
+        <a href="https://github.com/Patrick-Arnold0712/EasySpend/releases/latest/download/EasySpend-latest.apk" target="_blank" rel="noopener noreferrer">APK 下载</a>
+        <a href="https://github.com/Patrick-Arnold0712/EasySpend" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <span>Kotlin · Compose · Room · BYOK AI</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Open-Source Libraries: Swiper 11 + GSAP 3.12 + ScrollTrigger -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+  <script>
+    const hasGsap = typeof window.gsap !== "undefined";
+    if (hasGsap && typeof window.ScrollTrigger !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+    }
+
+    // 1. Reading Progress Bar (GPU scaleX)
+    const scrollProgress = document.getElementById("scrollProgress");
+    function updateScrollProgress() {
+      const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      const ratio = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+      scrollProgress.style.transform = `scaleX(${ratio})`;
+    }
+    window.addEventListener("scroll", updateScrollProgress, { passive: true });
+    updateScrollProgress();
+
+    // 2. Theme Toggle with View Transitions Circular Reveal
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+
+    function updateThemeIcon(isDark) {
+      themeIcon.innerHTML = isDark
+        ? '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>'
+        : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const root = document.documentElement;
+      const nextDark = root.getAttribute("data-theme") !== "dark";
+      const applyTheme = () => {
+        root.setAttribute("data-theme", nextDark ? "dark" : "light");
+        updateThemeIcon(nextDark);
+        renderChart(null, false);
+      };
+      if (!document.startViewTransition) {
+        applyTheme();
+        return;
+      }
+      const rect = themeToggle.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      const transition = document.startViewTransition(applyTheme);
+      transition.ready.then(() => {
+        document.documentElement.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
+          { duration: 420, easing: "cubic-bezier(0.22, 1, 0.36, 1)", pseudoElement: "::view-transition-new(root)" }
+        );
+      });
+    });
+
+    // 3. GSAP Hero Entrance, Number Roll-Up & Subtle Desktop 3D Phone Tilt
+    function animateCurrency(el, targetVal, prefix = "¥", decimals = 2) {
+      if (!hasGsap || !el) return;
+      const state = { val: 0 };
+      gsap.to(state, {
+        val: targetVal,
+        duration: 1.05,
+        ease: "power3.out",
+        onUpdate: () => {
+          el.textContent = prefix + state.val.toLocaleString("zh-CN", {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals
+          });
+        }
+      });
+    }
+
+    if (hasGsap) {
+      gsap.from(".hero-stagger", {
+        y: 22,
+        opacity: 0,
+        duration: 0.72,
+        stagger: 0.08,
+        ease: "power3.out",
+        clearProps: "transform,opacity"
+      });
+
+      gsap.from("#heroPhone", {
+        y: 28,
+        opacity: 0,
+        scale: 0.96,
+        duration: 0.85,
+        delay: 0.12,
+        ease: "power3.out",
+        clearProps: "transform,opacity"
+      });
+
+      gsap.from("#heroGoalFill", {
+        scaleX: 0,
+        duration: 1.1,
+        delay: 0.25,
+        ease: "power3.out"
+      });
+
+      animateCurrency(document.getElementById("heroBalance"), 1858.30);
+      animateCurrency(document.getElementById("heroIncome"), 2300.00);
+      animateCurrency(document.getElementById("heroExpense"), 441.70);
+
+      // Subtle 3D tilt on desktop pointer hover (disabled on touch devices)
+      const heroPhone = document.getElementById("heroPhone");
+      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches && heroPhone) {
+        heroPhone.addEventListener("mousemove", (e) => {
+          const rect = heroPhone.getBoundingClientRect();
+          const rx = ((e.clientY - rect.top) / rect.height - 0.5) * -7;
+          const ry = ((e.clientX - rect.left) / rect.width - 0.5) * 9;
+          gsap.to(heroPhone, { rotateX: rx, rotateY: ry, duration: 0.35, ease: "power2.out" });
+        });
+        heroPhone.addEventListener("mouseleave", () => {
+          gsap.to(heroPhone, { rotateX: 0, rotateY: 0, duration: 0.55, ease: "elastic.out(1, 0.5)" });
+        });
+      }
+
+      // Smooth Scroll-Triggered Section Reveals
+      document.querySelectorAll(".reveal-section").forEach((sec) => {
+        gsap.from(sec, {
+          y: 26,
+          opacity: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          clearProps: "transform,opacity",
+          scrollTrigger: {
+            trigger: sec,
+            start: "top 86%",
+            once: true
+          }
+        });
+      });
+    }
+
+    // 4. Interactive Mini Cashflow Calendar (with GSAP detail crossfade)
+    const calData = {
+      1: { net: "+1800", pos: true, text: "生活费 +¥1,800 · 食堂 -¥14", amount: "+¥1,786.00" },
+      3: { net: "-28.5", pos: false, text: "松涛园食堂 · 瑞幸咖啡", amount: "-¥28.50" },
+      5: { net: "+150", pos: true, text: "助研津贴 / 晚餐烧烤", amount: "+¥150.00" },
+      8: { net: "-19.8", pos: false, text: "美团单车 · 午餐", amount: "-¥19.80" },
+      11: { net: "-120", pos: false, text: "教材教辅采购", amount: "-¥120.00" },
+      14: { net: "+480", pos: true, text: "兼职家教 +¥500 · 交通", amount: "+¥480.00" },
+      18: { net: "-32.4", pos: false, text: "食堂连刷 3 笔", amount: "-¥32.40" }
+    };
+
+    const calGrid = document.getElementById("miniCalGrid");
+    const calDetail = document.getElementById("miniCalDetail");
+    let activeDay = 5;
+
+    function renderMiniCalendar() {
+      calGrid.innerHTML = "";
+      for (let d = 1; d <= 21; d++) {
+        const info = calData[d];
+        const btn = document.createElement("button");
+        btn.className = "cal-cell" +
+          (info ? " has-data" : "") +
+          (info && info.pos ? " positive" : "") +
+          (d === activeDay ? " active" : "");
+        btn.innerHTML = `<b>${d}</b><small>${info ? info.net : "·"}</small>`;
+        btn.addEventListener("click", () => {
+          activeDay = d;
+          renderMiniCalendar();
+          if (info) {
+            calDetail.innerHTML = `<div class="cal-detail-text"><strong>11月${d}日</strong> · ${info.text}</div><strong style="color:${info.pos ? "var(--safe)" : "var(--text)"};flex-shrink:0">${info.amount}</strong>`;
+          } else {
+            calDetail.innerHTML = `<div class="cal-detail-text"><strong>11月${d}日</strong> · 零消费自律日</div><strong style="color:var(--safe);flex-shrink:0">¥0.00</strong>`;
+          }
+          if (hasGsap) {
+            gsap.fromTo(calDetail, { y: 6, opacity: 0.2 }, { y: 0, opacity: 1, duration: 0.28, ease: "power2.out" });
+          }
+        });
+        calGrid.appendChild(btn);
+      }
+    }
+    renderMiniCalendar();
+
+    // 5. Swiper 11 Coverflow Wheel Carousel (Zero-Jank Mobile Touch Physics)
+    const wheelCounter = document.getElementById("wheelCounter");
+    const totalSlides = document.querySelectorAll("#wheelSwiper .swiper-slide").length;
+
+    function updateWheelCounter(index) {
+      const num = String((index % totalSlides) + 1).padStart(2, "0");
+      wheelCounter.textContent = `${num} / ${String(totalSlides).padStart(2, "0")}`;
+    }
+
+    if (typeof window.Swiper !== "undefined") {
+      const wheelSwiper = new Swiper("#wheelSwiper", {
+        effect: "coverflow",
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: "auto",
+        slideToClickedSlide: true,
+        speed: 440,
+        spaceBetween: 14,
+        resistanceRatio: 0.65,
+        threshold: 6,
+        coverflowEffect: {
+          rotate: 12,
+          stretch: 0,
+          depth: 90,
+          modifier: 1,
+          scale: 0.91,
+          slideShadows: false
+        },
+        pagination: {
+          el: "#wheelSwiper .swiper-pagination",
+          clickable: true
+        },
+        navigation: {
+          prevEl: "#wheelPrev",
+          nextEl: "#wheelNext"
+        },
+        keyboard: {
+          enabled: true,
+          onlyInViewport: true
+        },
+        on: {
+          slideChange: function () {
+            updateWheelCounter(this.realIndex);
+          }
+        }
+      });
+      updateWheelCounter(wheelSwiper.realIndex);
+    } else {
+      // Graceful offline horizontal scroll fallback if CDN unavailable
+      const wrapper = document.querySelector("#wheelSwiper .swiper-wrapper");
+      wrapper.style.overflowX = "auto";
+      wrapper.style.gap = "14px";
+      wrapper.style.padding = "0 16px";
+    }
+
+    // 6. Interactive Week / Month / Year SVG Line Chart (Animated Draw + Mobile Touch Scrubbing)
+    const periodDatasets = {
+      week: {
+        title: "2026年 第46周",
+        digestTitle: "第46周 · 财务周报",
+        grade: "A · 稳健有道",
+        delta: "环比 -9%",
+        incomeVal: 500,
+        expenseVal: 162.8,
+        netVal: 337.2,
+        rate: "67%",
+        daily: "¥23.26",
+        max: "¥45.00",
+        freq: "松涛园食堂 · 5次",
+        labels: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+        income: [0, 0, 200, 0, 300, 0, 0],
+        expense: [22, 18, 35, 15, 28, 45, 0],
+        net: [-22, -40, 125, 110, 382, 337, 337],
+        ranks: [
+          { name: "餐饮饮食", amount: "¥96.80", pct: 59 },
+          { name: "交通出行", amount: "¥28.00", pct: 17 },
+          { name: "饮品零食", amount: "¥23.00", pct: 14 },
+          { name: "日用百货", amount: "¥15.00", pct: 10 }
+        ],
+        points: [
+          "· 本周支出环比下降 9%，周日零消费。",
+          "· 餐饮占比 59%，食堂连刷已自动归类。",
+          "· 建议将本周结余 ¥337.20 划入储蓄目标。"
+        ]
+      },
+      month: {
+        title: "2026年11月",
+        digestTitle: "2026年11月 · 月报",
+        grade: "S · 攒钱标兵",
+        delta: "环比 -14%",
+        incomeVal: 2300,
+        expenseVal: 441.7,
+        netVal: 1858.3,
+        rate: "81%",
+        daily: "¥14.72",
+        max: "¥120.00",
+        freq: "松涛园食堂 · 8次",
+        labels: ["1日", "5日", "10日", "15日", "20日", "25日", "30日"],
+        income: [1800, 200, 0, 300, 0, 0, 0],
+        expense: [38, 65, 52, 120, 48, 68, 50],
+        net: [1762, 1897, 1845, 2025, 1977, 1909, 1858],
+        ranks: [
+          { name: "餐饮饮食", amount: "¥212.50", pct: 48 },
+          { name: "学习提升", amount: "¥120.00", pct: 27 },
+          { name: "交通出行", amount: "¥64.20", pct: 15 },
+          { name: "饮品零食", amount: "¥45.00", pct: 10 }
+        ],
+        points: [
+          "· 本月储蓄率 81%，预计结余领先 ¥1,000 目标。",
+          "· 必要支出占 75%，弹性消费控制克制。",
+          "· 支出峰值出现在 15 日教材采购。"
+        ]
+      },
+      year: {
+        title: "2026年度",
+        digestTitle: "2026年度 · 年报",
+        grade: "S · 攒钱标兵",
+        delta: "储蓄率 44%",
+        incomeVal: 27600,
+        expenseVal: 15420,
+        netVal: 12180,
+        rate: "44%",
+        daily: "¥42.25",
+        max: "¥1,299.00",
+        freq: "校园食堂 · 214次",
+        labels: ["1月", "3月", "5月", "7月", "9月", "11月"],
+        income: [4200, 4600, 4400, 4800, 5000, 4600],
+        expense: [2600, 2450, 2700, 2300, 2920, 2450],
+        net: [1600, 3750, 5450, 7950, 10030, 12180],
+        ranks: [
+          { name: "餐饮饮食", amount: "¥7,400", pct: 48 },
+          { name: "学习与数码", amount: "¥3,240", pct: 21 },
+          { name: "交通与出游", amount: "¥2,620", pct: 17 },
+          { name: "日用与服饰", amount: "¥2,160", pct: 14 }
+        ],
+        points: [
+          "· 全年累计净攒 ¥12,180，持续保持正盈余。",
+          "· 9 月开学季为年度消费峰值，随后平稳回落。",
+          "· 年度弹性支出同比缩减 18%。"
+        ]
+      }
+    };
+
+    let currentPeriod = "month";
+    const visibleSeries = { income: true, expense: true, net: true };
+    const trendSvg = document.getElementById("trendSvg");
+    const chartReadout = document.getElementById("chartReadout");
+    let activeChartIdx = null;
+
+    function buildSmoothPath(pts) {
+      if (!pts.length) return "";
+      let d = `M ${pts[0].x} ${pts[0].y}`;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p0 = pts[Math.max(0, i - 1)];
+        const p1 = pts[i];
+        const p2 = pts[i + 1];
+        const p3 = pts[Math.min(pts.length - 1, i + 2)];
+        const c1x = p1.x + (p2.x - p0.x) / 6;
+        const c1y = Math.min(Math.max(p1.y + (p2.y - p0.y) / 6, Math.min(p1.y, p2.y)), Math.max(p1.y, p2.y));
+        const c2x = p2.x - (p3.x - p1.x) / 6;
+        const c2y = Math.min(Math.max(p2.y - (p3.y - p1.y) / 6, Math.min(p1.y, p2.y)), Math.max(p1.y, p2.y));
+        d += ` C ${c1x} ${c1y}, ${c2x} ${c2y}, ${p2.x} ${p2.y}`;
+      }
+      return d;
+    }
+
+    function renderChart(selectedIdx = null, animateDraw = false) {
+      activeChartIdx = selectedIdx;
+      const ds = periodDatasets[currentPeriod];
+      const styles = getComputedStyle(document.documentElement);
+      const cSafe = styles.getPropertyValue("--safe").trim();
+      const cDanger = styles.getPropertyValue("--danger").trim();
+      const cAccent = styles.getPropertyValue("--accent").trim();
+      const cBorder = styles.getPropertyValue("--border").trim();
+      const cMuted = styles.getPropertyValue("--text-muted").trim();
+      const cSurface = styles.getPropertyValue("--surface").trim();
+
+      const W = 560, H = 200, padX = 20, padTop = 14, padBottom = 30;
+      const plotW = W - padX * 2;
+      const plotH = H - padTop - padBottom;
+
+      const vals = [0];
+      if (visibleSeries.income) vals.push(...ds.income);
+      if (visibleSeries.expense) vals.push(...ds.expense);
+      if (visibleSeries.net) vals.push(...ds.net);
+
+      const maxV = Math.max(...vals, 100) * 1.12;
+      const minV = Math.min(...vals, 0);
+      const range = Math.max(maxV - minV, 100);
+
+      const xOf = (i) => padX + (plotW * i) / Math.max(ds.labels.length - 1, 1);
+      const yOf = (v) => padTop + plotH * (1 - (v - minV) / range);
+      const zeroY = yOf(0);
+
+      let svg = `<defs>
+        <linearGradient id="incFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="${cSafe}" stop-opacity="0.16"/>
+          <stop offset="100%" stop-color="${cSafe}" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="expFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="${cDanger}" stop-opacity="0.14"/>
+          <stop offset="100%" stop-color="${cDanger}" stop-opacity="0"/>
+        </linearGradient>
+      </defs>`;
+
+      [0, 0.5, 1].forEach((f) => {
+        const y = padTop + plotH * f;
+        svg += `<line x1="${padX}" y1="${y}" x2="${W - padX}" y2="${y}" stroke="${cBorder}" stroke-width="1"/>`;
+      });
+
+      const drawSeries = (arr, color, fillId, dashed) => {
+        const pts = arr.map((v, i) => ({ x: xOf(i), y: yOf(v) }));
+        const path = buildSmoothPath(pts);
+        if (fillId) {
+          svg += `<path class="chart-area" d="${path} L ${pts[pts.length - 1].x} ${zeroY} L ${pts[0].x} ${zeroY} Z" fill="url(#${fillId})"/>`;
+        }
+        svg += `<path class="${dashed ? "chart-line-dashed" : "chart-line"}" d="${path}" fill="none" stroke="${color}" stroke-width="${dashed ? 2 : 2.3}" stroke-linecap="round" ${dashed ? 'stroke-dasharray="6 5"' : ""}/>`;
+        pts.forEach((p, idx) => {
+          const isSel = selectedIdx === idx;
+          const r = isSel ? 5 : 3;
+          svg += `<circle cx="${p.x}" cy="${p.y}" r="${r + 1.8}" fill="${cSurface}"/>`;
+          svg += `<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="${color}"/>`;
+        });
+      };
+
+      if (visibleSeries.income) drawSeries(ds.income, cSafe, "incFill", false);
+      if (visibleSeries.expense) drawSeries(ds.expense, cDanger, "expFill", false);
+      if (visibleSeries.net) drawSeries(ds.net, cAccent, null, true);
+
+      if (selectedIdx !== null) {
+        const sx = xOf(selectedIdx);
+        svg += `<line x1="${sx}" y1="${padTop}" x2="${sx}" y2="${padTop + plotH}" stroke="${cMuted}" stroke-opacity="0.45" stroke-dasharray="4 4"/>`;
+      }
+
+      ds.labels.forEach((lbl, i) => {
+        const x = xOf(i);
+        const weight = selectedIdx === i ? "700" : "400";
+        svg += `<text x="${x}" y="${H - 8}" text-anchor="middle" fill="${selectedIdx === i ? "var(--text)" : cMuted}" font-weight="${weight}" font-size="11">${lbl}</text>`;
+      });
+
+      trendSvg.innerHTML = svg;
+
+      // GSAP SVG line-drawing animation when period or series changes
+      if (animateDraw && hasGsap) {
+        trendSvg.querySelectorAll(".chart-line").forEach((path) => {
+          const len = path.getTotalLength();
+          gsap.fromTo(path,
+            { strokeDasharray: len, strokeDashoffset: len },
+            { strokeDashoffset: 0, duration: 0.72, ease: "power2.out" }
+          );
+        });
+        trendSvg.querySelectorAll(".chart-area, .chart-line-dashed").forEach((el) => {
+          gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.55, delay: 0.15, ease: "power2.out" });
+        });
+      }
+    }
+
+    function showPoint(idx) {
+      if (idx === activeChartIdx) return;
+      const ds = periodDatasets[currentPeriod];
+      renderChart(idx, false);
+      const netVal = ds.net[idx];
+      const netPrefix = netVal >= 0 ? "+" : "-";
+      chartReadout.innerHTML = `<span><strong style="color:var(--text)">${ds.labels[idx]}</strong> · 收 ¥${ds.income[idx]} · 支 ¥${ds.expense[idx]}</span><strong style="color:${netVal >= 0 ? "var(--safe)" : "var(--danger)"}">净攒 ${netPrefix}¥${Math.abs(netVal)}</strong>`;
+    }
+
+    // Touch & pointer scrubbing across the line chart
+    function scrubChartByClientX(clientX) {
+      const rect = trendSvg.getBoundingClientRect();
+      const ds = periodDatasets[currentPeriod];
+      const rel = Math.max(0, Math.min(1, (clientX - rect.left) / Math.max(rect.width, 1)));
+      const idx = Math.round(rel * (ds.labels.length - 1));
+      showPoint(idx);
+    }
+
+    trendSvg.addEventListener("pointermove", (e) => {
+      if (e.pointerType === "mouse" || e.buttons > 0) scrubChartByClientX(e.clientX);
+    });
+    trendSvg.addEventListener("pointerdown", (e) => scrubChartByClientX(e.clientX));
+    trendSvg.addEventListener("touchmove", (e) => {
+      if (e.touches.length) scrubChartByClientX(e.touches[0].clientX);
+    }, { passive: true });
+
+    function updatePeriodUI(animate = true) {
+      const ds = periodDatasets[currentPeriod];
+      const decimals = currentPeriod === "year" ? 0 : 2;
+      if (animate && hasGsap) {
+        animateCurrency(document.getElementById("kpiIncome"), ds.incomeVal, "¥", decimals);
+        animateCurrency(document.getElementById("kpiExpense"), ds.expenseVal, "¥", decimals);
+        animateCurrency(document.getElementById("kpiNet"), ds.netVal, "+¥", decimals);
+      } else {
+        document.getElementById("kpiIncome").textContent = "¥" + ds.incomeVal.toLocaleString("zh-CN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+        document.getElementById("kpiExpense").textContent = "¥" + ds.expenseVal.toLocaleString("zh-CN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+        document.getElementById("kpiNet").textContent = "+¥" + ds.netVal.toLocaleString("zh-CN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+      }
+
+      document.getElementById("deltaLabel").textContent = ds.delta;
+      document.getElementById("digestTitle").textContent = ds.digestTitle;
+      document.getElementById("digestGrade").textContent = ds.grade;
+      document.getElementById("digestRate").textContent = ds.rate;
+      document.getElementById("digestDaily").textContent = ds.daily;
+      document.getElementById("digestMax").textContent = ds.max;
+      document.getElementById("digestFreq").textContent = ds.freq;
+
+      document.getElementById("digestRanks").innerHTML = ds.ranks.map((r) => `
+        <div>
+          <div class="rank-row-top">
+            <span>${r.name}</span>
+            <strong>${r.amount} · ${r.pct}%</strong>
+          </div>
+          <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${r.pct}%"></div></div>
+        </div>
+      `).join("");
+
+      if (animate && hasGsap) {
+        gsap.from("#digestRanks .rank-bar-fill", {
+          scaleX: 0,
+          duration: 0.6,
+          stagger: 0.06,
+          ease: "power2.out"
+        });
+      }
+
+      document.getElementById("digestPoints").innerHTML = ds.points.map((p) => `<div>${p}</div>`).join("");
+      chartReadout.innerHTML = `<span>划动或点按折线节点查看数据</span><strong style="color:var(--text)">${ds.title}</strong>`;
+      renderChart(null, animate);
+    }
+
+    document.querySelectorAll("[data-period]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-period]").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentPeriod = btn.getAttribute("data-period");
+        updatePeriodUI(true);
+      });
+    });
+
+    document.querySelectorAll(".series-toggle").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const key = btn.getAttribute("data-series");
+        const activeCount = Object.values(visibleSeries).filter(Boolean).length;
+        if (visibleSeries[key] && activeCount <= 1) return;
+        visibleSeries[key] = !visibleSeries[key];
+        btn.classList.toggle("off", !visibleSeries[key]);
+        renderChart(null, true);
+      });
+    });
+
+    updatePeriodUI(false);
+
+    // 7. Interactive AI Financial Assistant & Custom API Import
+    const apiProviders = {
+      deepseek: {
+        name: "DeepSeek",
+        protocol: "OpenAI 兼容协议",
+        baseUrl: "https://api.deepseek.com/v1",
+        model: "deepseek-chat",
+        keyMask: "sk-••••••••••••••••••••••••a8f2",
+        latency: "184 ms"
+      },
+      qwen: {
+        name: "通义千问",
+        protocol: "OpenAI 兼容协议",
+        baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        model: "qwen-plus",
+        keyMask: "sk-••••••••••••••••••••••••q91e",
+        latency: "142 ms"
+      },
+      openai: {
+        name: "OpenAI 兼容",
+        protocol: "通用兼容接口（支持中转/本地）",
+        baseUrl: "https://api.openai.com/v1",
+        model: "gpt-4o-mini",
+        keyMask: "sk-proj-••••••••••••••••••7c4d",
+        latency: "268 ms"
+      },
+      gemini: {
+        name: "Gemini API",
+        protocol: "Google Gemini REST 原生协议",
+        baseUrl: "https://generativelanguage.googleapis.com/v1beta",
+        model: "gemini-2.5-flash",
+        keyMask: "AIzaSy••••••••••••••••••••K3mP",
+        latency: "215 ms"
+      }
+    };
+
+    const aiAnswers = {
+      save: "按 11 月前 20 天日均支出 ¥14.72 估算，本月剩余 10 天预计支出约 ¥150–¥180。\n\n· 当前净结余 ¥1,858.30，已提前完成 ¥1,000.00 存钱目标。\n· 若保持食堂 + 零消费自律日节奏，月底预计可净存 ¥1,680 左右，建议将超额部分 ¥600 转入长期储蓄账户。",
+      dining: "本月餐饮支出 ¥212.50（占比 48%），处于学生党非常健康的区间。\n\n· 其中松涛园食堂占 8 笔、均价 ¥12.40，性价比很高。\n· 唯一可微调的是饮品零食（¥45.00）：把瑞幸咖啡频次控制在每周 2 次，每月可轻松多省 ¥30–¥40 且不影响体验。",
+      budget: "结合 11 月实际消费结构，建议下月按「必要 70% + 弹性 30%」分配 ¥900 总预算：\n\n· 必要支出 ¥630：餐饮 ¥450 · 学习教材 ¥100 · 通勤交通 ¥80\n· 弹性支出 ¥270：饮品零食 ¥90 · 日用百货 ¥100 · 社交娱乐 ¥80\n· 预期储蓄率可稳定维持在 60% 以上。"
+    };
+
+    let currentProviderKey = "deepseek";
+    let typingTimer = null;
+
+    const apiBaseUrl = document.getElementById("apiBaseUrl");
+    const apiModel = document.getElementById("apiModel");
+    const apiKeyMask = document.getElementById("apiKeyMask");
+    const apiProtocolLabel = document.getElementById("apiProtocolLabel");
+    const apiStatus = document.getElementById("apiStatus");
+    const apiStatusDot = document.getElementById("apiStatusDot");
+    const apiStatusText = document.getElementById("apiStatusText");
+    const aiModelBadge = document.getElementById("aiModelBadge");
+    const aiResponseBody = document.getElementById("aiResponseBody");
+
+    function typeAiResponse(text) {
+      clearInterval(typingTimer);
+      aiResponseBody.textContent = "";
+      let idx = 0;
+      typingTimer = setInterval(() => {
+        idx += 2;
+        if (idx >= text.length) {
+          aiResponseBody.textContent = text;
+          clearInterval(typingTimer);
+        } else {
+          aiResponseBody.innerHTML = text.slice(0, idx) + '<span class="ai-cursor"></span>';
+        }
+      }, 18);
+    }
+
+    document.querySelectorAll("[data-provider]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-provider]").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentProviderKey = btn.getAttribute("data-provider");
+        const cfg = apiProviders[currentProviderKey];
+
+        apiBaseUrl.value = cfg.baseUrl;
+        apiModel.value = cfg.model;
+        apiKeyMask.value = cfg.keyMask;
+        apiProtocolLabel.textContent = cfg.protocol;
+        aiModelBadge.textContent = cfg.model;
+        apiStatus.classList.add("ok");
+        apiStatusText.textContent = `${cfg.name} 已就绪 · ${cfg.latency}`;
+
+        if (hasGsap) {
+          gsap.fromTo([apiBaseUrl, apiModel, apiKeyMask],
+            { x: -6, opacity: 0.4 },
+            { x: 0, opacity: 1, duration: 0.28, stagger: 0.04, ease: "power2.out" }
+          );
+        }
+      });
+    });
+
+    document.getElementById("apiTestBtn").addEventListener("click", () => {
+      const cfg = apiProviders[currentProviderKey];
+      apiStatus.classList.remove("ok");
+      apiStatusDot.classList.add("pulsing");
+      apiStatusText.textContent = `正在测试 ${cfg.name} 连通性...`;
+
+      setTimeout(() => {
+        apiStatusDot.classList.remove("pulsing");
+        apiStatus.classList.add("ok");
+        apiStatusText.textContent = `200 OK · ${cfg.model} · ${cfg.latency}`;
+        if (hasGsap) {
+          gsap.fromTo(apiStatus, { scale: 0.94 }, { scale: 1, duration: 0.3, ease: "back.out(2)" });
+        }
+      }, 520);
+    });
+
+    document.querySelectorAll("[data-prompt]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-prompt]").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const key = btn.getAttribute("data-prompt");
+        typeAiResponse(aiAnswers[key]);
+      });
+    });
+
+    document.getElementById("aiCustomForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.getElementById("aiCustomInput");
+      const q = input.value.trim();
+      if (!q) return;
+      document.querySelectorAll("[data-prompt]").forEach((b) => b.classList.remove("active"));
+      const cfg = apiProviders[currentProviderKey];
+      typeAiResponse(
+        `已通过 ${cfg.name}（${cfg.model}）分析你的提问「${q}」：\n\n· 依据 2026-11 账本，当前净结余 ¥1,858.30 且已达成 ¥1,000.00 储蓄目标，具备约 ¥650 的弹性空间。\n· 建议为大额弹性消费设置单独限额，优先保留 15% 应急机动金，既能提升生活幸福感也不破坏月度存钱节奏。`
+      );
+      input.value = "";
+    });
+
+    // Initial AI answer render
+    aiResponseBody.textContent = aiAnswers.save;
+
+    // 8. Interactive Classification Pipeline Row Switcher
+    const pipeCases = [
+      {
+        s1: "商户：美团 · ¥1.80 · 08:15",
+        s2: "命中 1 级记忆：商户 + 小额 + 早通勤",
+        s3: "交通出行（98% 记忆确信）"
+      },
+      {
+        s1: "商户：美团 · ¥22.50 · 12:20",
+        s2: "命中 2 级特征：商户 + 中额 + 午餐时段",
+        s3: "餐饮饮食（95% 特征确信）"
+      },
+      {
+        s1: "商户：蓝山自习室（南校店）",
+        s2: "归一化核心名，继承「东校店」手动历史",
+        s3: "学习提升（96% 跨门店记忆）"
+      }
+    ];
+
+    document.querySelectorAll(".swiss-row[data-case]").forEach((row) => {
+      row.addEventListener("click", () => {
+        document.querySelectorAll(".swiss-row[data-case]").forEach((r) => r.classList.remove("active"));
+        row.classList.add("active");
+        const c = pipeCases[Number(row.getAttribute("data-case"))];
+        document.getElementById("pipeStep1").textContent = c.s1;
+        document.getElementById("pipeStep2").textContent = c.s2;
+        document.getElementById("pipeStep3").textContent = c.s3;
+        if (hasGsap) {
+          gsap.fromTo("#pipelineBar .pipeline-step",
+            { y: 6, opacity: 0.35 },
+            { y: 0, opacity: 1, duration: 0.3, stagger: 0.06, ease: "power2.out" }
+          );
+        }
+      });
+    });
+  </script>
+</body>
+</html>
